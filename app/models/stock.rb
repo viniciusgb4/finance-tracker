@@ -4,8 +4,12 @@ class Stock < ApplicationRecord
     client = IEX::Api::Client.new(publishable_token: Rails.application.credentials.iex_client[:publishable_token],
                                   secret_token: Rails.application.credentials.iex_client[:secret_token],
                                   endpoint: 'https://cloud.iexapis.com/v1')
-    qto = client.quote(ticker_symble)
-    qto.latest_price
+    begin
+      qto = client.quote(ticker_symble)
+      new(ticker: ticker_symble, name:qto.company_name, last_price: qto.latest_price)
+    rescue => exception
+      return nil
+    end
   end
 
 end
