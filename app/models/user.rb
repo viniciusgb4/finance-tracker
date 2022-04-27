@@ -26,22 +26,20 @@ class User < ApplicationRecord
     first_name || last_name ? "#{first_name} #{last_name}" : 'Anonymous'
   end
 
-  def friend_already_followed?(email)
-    friend = User.find_by(email: email)
-    friendship = Friendship.where(user_id: id, friend_id: friend.id)
-    return friendship.present?
+  def friend_already_followed?(friend_id)
+    friends.where(id: friend_id).exists?
   end
 
   def under_friendship_limit?
     friends.count < 10
   end
 
-  def friend_is_equal_current_user?(email)
-    self.email == email
+  def friend_is_equal_current_user?(friend_id)
+    self.id == friend_id
   end
 
-  def can_follow_friend?(email)
-    under_friendship_limit? and not friend_already_followed?(email) and not friend_is_equal_current_user?(email)
+  def can_follow_friend?(friend_id)
+    under_friendship_limit? and not friend_already_followed?(friend_id) and not friend_is_equal_current_user?(friend_id)
   end
 
 end

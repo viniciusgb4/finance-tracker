@@ -2,8 +2,9 @@ class FriendsController < ApplicationController
 
   def search
     if friends_params.present?
-      @friend = User.find_by(email: friends_params)
-      if @friend
+      @friends= User.where("email = ? OR first_name ILIKE ? OR last_name ILIKE ?", friends_params, "%#{friends_params}%", "%#{friends_params}%")
+      @friends = @friends.reject {|u| u.id == current_user.id }
+      if @friends
         respond_to do |format|
           format.js {render partial: 'friends/friend'}
         end

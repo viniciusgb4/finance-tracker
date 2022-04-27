@@ -1,27 +1,26 @@
 <div class="results-block">
   <%= render 'layouts/messages' %>
 
-  <% if @friend %>
+  <% if @friends.present? %>
     <div class="card card-header results-block">
-      <strong>First name: </strong> <%= @friend.first_name %>
-      <strong>Last name: </strong> <%= @friend.last_name %>
-      <strong>E-mail: </strong> <%= @friend.email %>
-      <% if current_user.can_follow_friend?(@friend.email) %>
-        <%= link_to "Add friend to My Friends", friendships_path(user_id: current_user.id, friend_id: @friend.id),
-                    class: "btn btn-xs btn-success", method: :post %>
-      <% elsif current_user.friend_already_followed?(@friend.email) %>
-        <span class="badge badge-danger">
-          Friend already followed!
-        </span>
-      <% elsif not current_user.under_friendship_limit? %>
-        <span class="badge badge-danger">
-          You can't follow more than 10 friends
-        </span>
-      <% else %>
-        <span class="badge badge-danger">
-          You can't follow yourself
-        </span>
-      <% end %>
+      <table>
+        <% @friends.each do |friend| %>
+          <tr>
+            <td><strong>Name: </strong> <%= "#{friend.first_name} #{friend.last_name}" %></td>
+            <td><strong>E-mail: </strong> <%= friend.email %></td>
+            <td><strong>Actions: </strong>
+              <% if current_user.can_follow_friend?(friend.id) %>
+                <%= link_to "Follow", friendships_path(user_id: current_user.id, friend_id: friend.id),
+                            class: "btn btn-success follow-btn", method: :post %>
+              <% elsif current_user.friend_already_followed?(friend.id) %>
+                <%= link_to friendship_path(friend), method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-danger follow-btn' do %>
+                  Unfollow
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
     </div>
   <% end %>
 </div>
