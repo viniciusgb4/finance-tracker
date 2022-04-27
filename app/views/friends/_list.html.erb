@@ -1,0 +1,28 @@
+<% if not @followed_friends.empty? %>
+  <div class="row">
+    <div class="col-9">
+      <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th scope="col">First name</th>
+          <th scope="col">Last name</th>
+          <th scope="col">E-mail</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @followed_friends.each do |friend| %>
+          <tr>
+            <th scope="row"><%= friend.first_name %></th>
+            <td><%= friend.last_name %></td>
+            <td><%= friend.email %></td>
+            <td><%= link_to friendships_path(friend), method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-danger' do %>
+                <%= fa_icon 'trash' %>
+                <% end %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

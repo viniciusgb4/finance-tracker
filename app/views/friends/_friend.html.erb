@@ -1,0 +1,27 @@
+<div class="results-block">
+  <%= render 'layouts/messages' %>
+
+  <% if @friend %>
+    <div class="card card-header results-block">
+      <strong>First name: </strong> <%= @friend.first_name %>
+      <strong>Last name: </strong> <%= @friend.last_name %>
+      <strong>E-mail: </strong> <%= @friend.email %>
+      <% if current_user.can_follow_friend?(@friend.email) %>
+        <%= link_to "Add friend to My Friends", friendships_path(user_id: current_user.id, friend_id: @friend.id),
+                    class: "btn btn-xs btn-success", method: :post %>
+      <% elsif current_user.friend_already_followed?(@friend.email) %>
+        <span class="badge badge-danger">
+          Friend already followed!
+        </span>
+      <% elsif not current_user.under_friendship_limit? %>
+        <span class="badge badge-danger">
+          You can't follow more than 10 friends
+        </span>
+      <% else %>
+        <span class="badge badge-danger">
+          You can't follow yourself
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+</div>

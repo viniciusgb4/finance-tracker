@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   has_many :user_stocks
   has_many :stocks, through: :user_stocks
+  has_many :friendships
+  has_many :friends, through: :friendships
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -22,6 +24,24 @@ class User < ApplicationRecord
 
   def full_name
     first_name || last_name ? "#{first_name} #{last_name}" : 'Anonymous'
+  end
+
+  def friend_already_followed?(email)
+    friend = User.find_by(email: email)
+    friendship = Friendship.where(user_id: id, friend_id: friend.id)
+    return friendship.present?
+  end
+
+  def under_friendship_limit?
+    friends.count < 10
+  end
+
+  def friend_is_equal_current_user?(email)
+    self.email == email
+  end
+
+  def can_follow_friend?(email)
+    under_friendship_limit? and not friend_already_followed?(email) and not friend_is_equal_current_user?(email)
   end
 
 end

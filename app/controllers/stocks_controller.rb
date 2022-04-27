@@ -19,11 +19,6 @@ class StocksController < ApplicationController
         format.js {render partial: 'stocks/stock'}
       end
     end
-    # respond_to do |format|
-    #   format.html {redirect_to my_portifolio_path, notice: "Consulta retornou"}
-    #   format.json { head :no_content }
-    #   format.js   { render :layout => false }
-    # end
   end
 
 
